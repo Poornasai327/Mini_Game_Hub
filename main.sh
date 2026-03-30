@@ -22,7 +22,7 @@ signup(){
         do
                 echo >&2                # echo is used for spacing between read prompts
                 read -p "Setup your Username: " new_username
-                
+
                 if [[ "$new_username" == "" ]]; then
                 # echo "comment" >&2 is used to print directly to terminal instead of storing in player variable
                         echo -e "\n\033[0;31mUsername cannot be empty.Please Enter valid username.\033[0m" >&2
@@ -97,7 +97,7 @@ authenticate_user(){
                 echo >&2
                 read -p "Enter Username (If you are first time user Enter '#') : " username     # Prmopting for login and signup
 
-                if [[ "$username" == "#" ]]; then       
+                if [[ "$username" == "#" ]]; then
                         signup                  # Opening signup form.
                         continue
                 fi
@@ -106,8 +106,15 @@ authenticate_user(){
                         continue
                 fi
                 if check_existing_user "$username"; then
+                        if [[ ${#players[@]} -eq 0 ]]; then                   # Condition for ensuring distinct players.
+                                players[0]="$username"
+                        elif [[ "$username" != "${players[0]}" ]]; then
+                                players[1]="$username"
+                        else
+                                echo -e "\n\033[0;31mPlayers must be distinct, Please try again.\033[0m" >&2
+                                continue
+                        fi
                         login_password "$username"
-                        echo "$username"
                         return
                 else
                         echo -e "\n\033[0;31mThis username does not exist, Please try again.\033[0m" >&2
@@ -115,14 +122,24 @@ authenticate_user(){
         done
 }
 
-echo -e "\n\n\t\t\t\t\t\t\tWelcome to the World of Mini Game Hub\n"
+# Function for keeping text messages at center
+center() {
+        msg="$1"
+        pad=$(( ($(tput cols) - ${#msg}) / 2 ))
+        printf "%*s%s\n\n" $pad "" "$msg"
+}
 
-# Storing Usernames in player1 and player2
-echo -e "\t\t\t\t\t\t\t  User Authentication for Player 1"
-player1=$(authenticate_user)
+echo
+echo
+center "WELCOME TO THE WORLD OF MINI GAME HUB"
 
-echo -e "\t\t\t\t\t\t\t  User Authentication for Player 2"
-player2=$(authenticate_user)
+# Storing Usernames in array of players
+players=()
+center "User Authentication for Player 1"
+authenticate_user
+
+center "User Authentication for Player 2"
+authenticate_user
 
 echo -e "\n\033[0;32mPlayers logged in succefully!\033[0m\n"
-echo -e "Let's start the game between $player1 and $player2\n"
+echo -e "Let's start the game between ${players[0]} and ${players[1]}\n"
