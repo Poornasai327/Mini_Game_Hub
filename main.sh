@@ -143,3 +143,5 @@ authenticate_user
 
 echo -e "\n\033[0;32mPlayers logged in succefully!\033[0m\n"
 echo -e "Let's start the game between ${players[0]} and ${players[1]}\n"
+
+python3 game.py ${players[0]} ${players[1]}
