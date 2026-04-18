@@ -3,7 +3,7 @@ import numpy as np
 
 class Game:
 
-    def __init__(self,players,current_player,surface,size):                    
+    def __init__(self,players,current_player,surface,size):                     # Initialising Game object    
         self.players = players
         self.board = np.full((size,size),0)
         self.current_player = current_player
@@ -34,21 +34,21 @@ def create_button(Text,color,font,centerx,centery,height,width):        # For cr
     pos.center = (centerx,centery)
     return {"text":text,"text_pos":pos,"button_pos":rect}                # Returns a dictionary with text, text position and button rect positons
 
-def hover(button,speedx,speedy):                                # To create hover effect
+def hover(button,speedx,speedy,height,width):                                # To create hover effect
     if button["button_pos"].collidepoint(mouse_pos()):
-        if button["button_pos"].height < 90:
+        if button["button_pos"].height < height+10:
             button["button_pos"].height += speedy
-        if button["button_pos"].width < 310:
+        if button["button_pos"].width < width+10:
             button["button_pos"].width += speedx
     else:
-        if button["button_pos"].height > 80:
+        if button["button_pos"].height > height:
             button["button_pos"].height -= speedy
-        if button["button_pos"].width > 300:
+        if button["button_pos"].width > width:
             button["button_pos"].width -= speedx
     button["button_pos"].center = button["text_pos"].center       
     return
 
-def reset_button(button):                                   # Keeping the button into original state.
-    button["button_pos"].height = 80
-    button["button_pos"].width = 300
+def reset_button(button,height,width):                                   # Keeping the button into original state.
+    button["button_pos"].height = height
+    button["button_pos"].width = width
     button["button_pos"].center = button["text_pos"].center
