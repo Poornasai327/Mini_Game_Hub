@@ -4,6 +4,7 @@ import pygame
 import os
 from base_game import mouse_pos,load_img,create_button,hover,reset_button
 from games.connect4 import connect4
+from games.tictactoe import tictactoe
 
 def main():
     players = [sys.argv[1],sys.argv[2]]
@@ -18,6 +19,7 @@ def main():
     Menu_bg1 = load_img(os.path.join(os.path.join('background_images','Mini game hub celebration scene.png')),Game_Surface.get_size())
     Menu_bg2 = load_img(os.path.join('background_images','Arcade game selection mini-room.png'),Game_Surface.get_size())
     connect4_bg = load_img(os.path.join("background_images","dark-hexagonal-background-with-gradient-color_79603-1409.png"),Game_Surface.get_size())
+    tictactoe_bg = load_img(os.path.join("background_images","tictactoe_bg.png"),Game_Surface.get_size())
 
     # Defining font styles
     font = pygame.font.Font(None,52)
@@ -33,6 +35,7 @@ def main():
 
     # Creating and Initialising Game Objects
     connect4_game = connect4(players,0,Game_Surface,7)
+    tictactoe_game = tictactoe(players,0,Game_Surface,10)
 
     # For running GUI window
     Playing = True
@@ -83,6 +86,10 @@ def main():
                         Game_State = 3
                         game = "connect4"
                         reset_button(Connect4_button,80,300)
+                    if Tic_button["button_pos"].collidepoint(mouse_pos()):
+                        Game_State = 3
+                        game = "tictactoe"
+                        reset_button(Tic_button,80,300)
 
             # Drawing rects and blitting buttons
             pygame.draw.rect(Game_Surface,(79, 70, 229),Tic_button["button_pos"],0,15)
@@ -105,13 +112,20 @@ def main():
                     if Back_button["button_pos"].collidepoint((mx,my)):
                         Game_State = 2
                         reset_button(Back_button,80,200)
+                        # resetting game states after clicking back button while playing
                         connect4_game = connect4(players,0,Game_Surface,7)
+                        tictactoe_game = tictactoe(players,0,Game_Surface,10)
                     if game == "connect4":
                         connect4_game.handle_click(mx,my)                               # To update game board in connect4
+                    if game == "tictactoe":
+                        tictactoe_game.handle_click(mx,my)
                 hover(Back_button,1,2,80,200)
             if game == "connect4":
                 Game_Surface.blit(connect4_bg)
                 connect4_game.play()
+            elif game == "tictactoe":
+                Game_Surface.blit(tictactoe_bg)
+                tictactoe_game.play()
 
             pygame.draw.rect(Game_Surface,(220, 38, 38),Back_button["button_pos"],0,15)
             Game_Surface.blit(Back_button["text"],Back_button["text_pos"])
