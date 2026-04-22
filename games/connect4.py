@@ -29,7 +29,7 @@ class connect4(Game):
                 else:
                     pygame.draw.circle(self.surface,(11, 30, 45),(420+110*j,170+110*i),40)
 
-    def handle_click(self,mx,my):                                                   # Handling mouse click and updating the board accordingly
+    def handle_click(self,mx,my):                                                # Handling mouse click and updating the board accordingly
         for j in range(self.size):
             if 380+110*j < mx < 460+110*j:
                 for i in range(self.size-1,-1,-1):
