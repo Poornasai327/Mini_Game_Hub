@@ -44,6 +44,9 @@ def main():
     Connect4_button = create_button("Connect4",(255,255,255),font,Game_Surface_centerx,460,80,300)
     Othello_button = create_button("Othello",(255,255,255),font,Game_Surface_centerx,620,80,300)
     Back_button = create_button("Back",(255,255,255),font,150,80,80,200)
+    Play_again_button = create_button("Play Again",(255,255,255),font,Game_Surface_centerx,380,80,300)
+    Display_leaderboard_button = create_button("Leaderboard",(255,255,255),font,Game_Surface_centerx,540,80,300)
+    Show_charts_button = create_button("Matplotlib",(255,255,255),font,Game_Surface_centerx,700,80,300)
 
     # Creating and Initialising Game Objects
     connect4_game = connect4(players,0,Game_Surface,7)
@@ -150,9 +153,11 @@ def main():
             if game == "connect4":
                 Game_Surface.blit(connect4_bg)
                 connect4_game.play()
+                results = connect4_game.results
             elif game == "tictactoe":
                 Game_Surface.blit(tictactoe_bg)
                 tictactoe_game.play()
+                results = tictactoe_game.results
             elif game == "othello":
                 Game_Surface.blit(othello_bg)
                 othello_game.play()
@@ -174,7 +179,25 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     Playing = False
-        
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mx,my = mouse_pos()
+                    if Play_again_button["button_pos"].collidepoint((mx,my)):
+                        Game_State = 1
+                        reset_button(Play_again_button,80,300)
+                    if Display_leaderboard_button["button_pos"].collidepoint((mx,my)):
+                        pass
+                    if Show_charts_button["button_pos"].collidepoint((mx,my)):
+                        pass
+                hover(Play_again_button,1,2,80,300)
+                hover(Display_leaderboard_button,1,2,80,300)
+                hover(Show_charts_button,1,2,80,300)
+
+            pygame.draw.rect(Game_Surface,(139, 92, 246),Play_again_button["button_pos"],0,15)
+            pygame.draw.rect(Game_Surface,(168, 85, 247),Display_leaderboard_button["button_pos"],0,15)
+            pygame.draw.rect(Game_Surface,(139, 92, 246),Show_charts_button["button_pos"],0,15)
+            Game_Surface.blit(Play_again_button["text"],Play_again_button["text_pos"])
+            Game_Surface.blit(Display_leaderboard_button["text"],Display_leaderboard_button["text_pos"])
+            Game_Surface.blit(Show_charts_button["text"],Show_charts_button["text_pos"])
         # Blitting everuthing on to the screen   
         screen.blit(Game_Surface)
         pygame.display.flip()

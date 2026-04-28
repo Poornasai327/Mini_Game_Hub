@@ -1,5 +1,5 @@
 from base_game import Game,mouse_pos,load_img
-import os
+from datetime import datetime
 import pygame
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
@@ -9,7 +9,9 @@ class connect4(Game):
 
     def __init__(self,players,current_player,surface,size):             # Using same init as in Game class
         self.still_playing = True
+        self.font = pygame.font.Font(None,52)
         super().__init__(players,current_player,surface,size)
+        self.results = {}
 
     def check_win(self):
         window_board = sliding_window_view(self.board,(4,4))
@@ -24,6 +26,10 @@ class connect4(Game):
             return True
         else:
             return False
+        
+    def check_draw(self):                                                               # Checking Draw case
+        if 0 not in self.board:
+            self.still_playing = False
 
     def change_turn(self):                                              # Using same change_turn method as in Game class
         return super().change_turn()
@@ -51,6 +57,10 @@ class connect4(Game):
                             self.update_board(i,j)
                             if self.check_win():
                                 self.still_playing = False
+                                self.game_over_time = pygame.time.get_ticks()
+                            elif self.check_draw():
+                                self.still_playing = False
+                                self.game_over_time = pygame.time.get_ticks()
                             else:
                                 self.change_turn()
                             break
@@ -71,3 +81,49 @@ class connect4(Game):
         self.display_board()
         if self.still_playing:      # Displaying preview effect if still playing
             self.show_preview()
+
+            # Displaying players turns
+            if self.current_player == 0:
+                Text = self.font.render("Green's Turn",1,(255,255,255))
+            else:
+                Text = self.font.render("Red's Turn",1,(255,255,255))
+            Text_rect = Text.get_rect()
+            Text_rect.center = (750,50)
+            self.surface.blit(Text,Text_rect)
+
+        else:
+            # Showing redirection text
+            redirecting = self.font.render(f"Redirecting in... {int(4-int(pygame.time.get_ticks()-self.game_over_time)/1000)}'s",1,(255,255,255))
+            redirecting_rect = redirecting.get_rect()
+            redirecting_rect.center = (self.surface.get_rect().centerx,950)
+            self.surface.blit(redirecting,redirecting_rect)
+
+            # Displaying who is winner
+            if self.check_win():
+                if self.current_player == 0:
+                    winner_text = self.font.render("Green Won",1,(255,255,255))
+                else:
+                    winner_text = self.font.render("Red Won",1,(255,255,255))
+                winner_text_rect = winner_text.get_rect()
+                winner_text_rect.center = (self.surface.get_rect().centerx,50)
+                self.surface.blit(winner_text,winner_text_rect)
+            elif self.check_draw():
+                draw_text = self.font.render("Game is Draw",1,(255,255,255))
+                draw_text_rect = draw_text.get_rect()
+                draw_text_rect.center = (self.surface.get_rect().centerx,50)
+                self.surface.blit(draw_text,draw_text_rect)
+
+            # Appending results after 3 seconds
+            if pygame.time.get_ticks() - self.game_over_time >= 3000:
+                if self.check_win():
+                    self.results = {
+                    "winner":self.players[self.current_player],
+                    "loser":self.players[(self.current_player+1)%2],
+                    "date-time":datetime.now().ctime(),
+                    "game":"connect4"
+                    }
+                elif self.check_draw():
+                    self.results = {
+                        "date-time":datetime.now().ctime(),
+                        "game":"connect4"
+                    }
