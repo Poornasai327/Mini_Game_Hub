@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import sys
 
 class Game:
 
@@ -52,3 +53,11 @@ def reset_button(button,height,width):                                   # Keepi
     button["button_pos"].height = height
     button["button_pos"].width = width
     button["button_pos"].center = button["text_pos"].center
+
+def append_history(results):                                            # Appending history with relevant draw case
+    if "winner" in results.keys():
+        with open("history.csv","a") as f:
+            f.write(f'{results["winner"]},{results["loser"]},{results["date-time"]},{results["game"]},no\n')
+    else:
+        with open("history.csv","a") as f:
+            f.write(f'{sys.argv[1]},{sys.argv[2]},{results["date-time"]},{results["game"]},yes\n')

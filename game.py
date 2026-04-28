@@ -2,40 +2,56 @@ import numpy as np
 import sys
 import pygame
 import os
-from base_game import mouse_pos,load_img,create_button,hover,reset_button
+from base_game import mouse_pos,load_img,create_button,hover,reset_button,append_history
 from games.connect4 import connect4
 from games.tictactoe import tictactoe
+from games.othello import othello
 
 def main():
+
+    if not os.path.exists("history.csv"):                           # Creating history.csv file if not present
+        with open("history.csv","w") as f:
+            f.write(f"winner,loser,date-time,game,isdraw\n")
+
     players = [sys.argv[1],sys.argv[2]]
     pygame.init()
-    screen = pygame.display.set_mode((1500,1000))                    # Creating GUI window
+
+    # screen details
+    screen_size = (1500,1000)
+    screen = pygame.display.set_mode(screen_size)                    # Creating GUI window
     caption = pygame.display.set_caption("Mini Game Hub")
 
     # Creating a Menu Surface for smooth handling
-    Game_Surface = pygame.Surface(screen.get_size())
+    Game_Surface = pygame.Surface(screen_size)
+    Game_Surface_centerx = Game_Surface.get_rect().centerx
+    Game_Surface_centery = Game_Surface.get_rect().centery
 
     # Loading Background Images
-    Menu_bg1 = load_img(os.path.join(os.path.join('background_images','Mini game hub celebration scene.png')),Game_Surface.get_size())
-    Menu_bg2 = load_img(os.path.join('background_images','Arcade game selection mini-room.png'),Game_Surface.get_size())
-    connect4_bg = load_img(os.path.join("background_images","dark-hexagonal-background-with-gradient-color_79603-1409.png"),Game_Surface.get_size())
-    tictactoe_bg = load_img(os.path.join("background_images","tictactoe_bg.png"),Game_Surface.get_size())
+    Menu_bg1 = load_img(os.path.join(os.path.join('background_images','menu_bg1.png')),screen_size)
+    Menu_bg2 = load_img(os.path.join('background_images','menu_bg2.png'),screen_size)
+    connect4_bg = load_img(os.path.join("background_images","connect4_bg.png"),screen_size)
+    tictactoe_bg = load_img(os.path.join("background_images","tictactoe_bg.png"),screen_size)
+    othello_bg = load_img(os.path.join("background_images","othello_bg.png"),screen_size)
 
     # Defining font styles
     font = pygame.font.Font(None,52)
 
     # Creating buttons
-    Select_button = create_button("Select Game",(255,255,255),font,Game_Surface.get_rect().centerx,380,80,300)
-    Instructions_button = create_button("Instructions",(255,255,255),font,Game_Surface.get_rect().centerx,540,80,300)
-    Quit_button = create_button("Quit",(255,255,255),font,Game_Surface.get_rect().centerx,700,80,300)
-    Tic_button = create_button("Tic Tac Toe",(255,255,255),font,Game_Surface.get_rect().centerx,300,80,300)
-    Connect4_button = create_button("Connect4",(255,255,255),font,Game_Surface.get_rect().centerx,460,80,300)
-    Othello_button = create_button("Othello",(255,255,255),font,Game_Surface.get_rect().centerx,620,80,300)
+    Select_button = create_button("Select Game",(255,255,255),font,Game_Surface_centerx,380,80,300)
+    Instructions_button = create_button("Instructions",(255,255,255),font,Game_Surface_centerx,540,80,300)
+    Quit_button = create_button("Quit",(255,255,255),font,Game_Surface_centerx,700,80,300)
+    Tic_button = create_button("Tic Tac Toe",(255,255,255),font,Game_Surface_centerx,300,80,300)
+    Connect4_button = create_button("Connect4",(255,255,255),font,Game_Surface_centerx,460,80,300)
+    Othello_button = create_button("Othello",(255,255,255),font,Game_Surface_centerx,620,80,300)
     Back_button = create_button("Back",(255,255,255),font,150,80,80,200)
 
     # Creating and Initialising Game Objects
     connect4_game = connect4(players,0,Game_Surface,7)
     tictactoe_game = tictactoe(players,0,Game_Surface,10)
+    othello_game = othello(players,0,Game_Surface,8)
+
+    # Results dictionary
+    results = {}
 
     # For running GUI window
     Playing = True
@@ -79,17 +95,22 @@ def main():
                 hover(Othello_button,1,2,80,300)
                 hover(Back_button,1,2,80,200)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if Back_button["button_pos"].collidepoint(mouse_pos()):
+                    mx,my = mouse_pos()
+                    if Back_button["button_pos"].collidepoint((mx,my)):
                         Game_State = 1
                         reset_button(Back_button,80,200)
-                    if Connect4_button["button_pos"].collidepoint(mouse_pos()):
+                    if Connect4_button["button_pos"].collidepoint((mx,my)):
                         Game_State = 3
                         game = "connect4"
                         reset_button(Connect4_button,80,300)
-                    if Tic_button["button_pos"].collidepoint(mouse_pos()):
+                    if Tic_button["button_pos"].collidepoint((mx,my)):
                         Game_State = 3
                         game = "tictactoe"
                         reset_button(Tic_button,80,300)
+                    if Othello_button["button_pos"].collidepoint((mx,my)):
+                        Game_State = 3
+                        game = "othello"
+                        reset_button(Othello_button,80,300)
 
             # Drawing rects and blitting buttons
             pygame.draw.rect(Game_Surface,(79, 70, 229),Tic_button["button_pos"],0,15)
@@ -115,20 +136,45 @@ def main():
                         # resetting game states after clicking back button while playing
                         connect4_game = connect4(players,0,Game_Surface,7)
                         tictactoe_game = tictactoe(players,0,Game_Surface,10)
+                        othello_game = othello(players,0,Game_Surface,8)
                     if game == "connect4":
                         connect4_game.handle_click(mx,my)                               # To update game board in connect4
-                    if game == "tictactoe":
-                        tictactoe_game.handle_click(mx,my)
+                    elif game == "tictactoe":
+                        tictactoe_game.handle_click(mx,my)                              # To update game board in tictactoe
+                    elif game == "othello":
+                        othello_game.handle_click(mx,my)                                # To update game board in othello
                 hover(Back_button,1,2,80,200)
+                hover(othello_game.ok_button,1,2,80,300)
+
+            # while playing games
             if game == "connect4":
                 Game_Surface.blit(connect4_bg)
                 connect4_game.play()
             elif game == "tictactoe":
                 Game_Surface.blit(tictactoe_bg)
                 tictactoe_game.play()
+            elif game == "othello":
+                Game_Surface.blit(othello_bg)
+                othello_game.play()
+                results = othello_game.results
+
+            # Appending results into history.csv and resetting game states
+            if len(results) > 0:
+                append_history(results)
+                Game_State = 4
+                connect4_game = connect4(players,0,Game_Surface,7)
+                tictactoe_game = tictactoe(players,0,Game_Surface,10)
+                othello_game = othello(players,0,Game_Surface,8)
 
             pygame.draw.rect(Game_Surface,(220, 38, 38),Back_button["button_pos"],0,15)
             Game_Surface.blit(Back_button["text"],Back_button["text_pos"])
+
+        if Game_State == 4:
+            Game_Surface.blit(Menu_bg1)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    Playing = False
+        
         # Blitting everuthing on to the screen   
         screen.blit(Game_Surface)
         pygame.display.flip()
