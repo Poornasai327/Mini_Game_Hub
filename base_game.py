@@ -1,6 +1,9 @@
 import pygame
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
+import csv
+
 
 class Game:
 
@@ -61,3 +64,77 @@ def append_history(results):                                            # Append
     else:
         with open("history.csv","a") as f:
             f.write(f'{sys.argv[1]},{sys.argv[2]},{results["date-time"]},{results["game"]},yes\n')
+
+def matplotlib_charts():
+    wins={}
+    losses={}
+    games={}
+
+    with open("history.csv","r") as file:                       # Reading history.csv
+        reader = csv.reader(file)
+        next(reader)
+
+        for line in reader:
+            winner = line[0]
+            loser = line [1]
+            game = line[3]
+
+            if winner in wins:
+                wins[winner] += 1
+            else:
+                wins[winner] = 1
+                
+            if loser in losses:
+                losses[loser] += 1
+            else:
+                losses[loser] = 1
+
+            if game in games:
+                games[game] += 1
+            else:
+                games[game] = 1
+
+    font1 = {'family': 'serif', 'color': '#1f3b73', 'size': 20, 'weight': 'bold'}
+    font2 = {'family': 'sans-serif', 'color': '#333333', 'size': 13 }
+
+    # 1. Top 5 players sorted wins (Bar Graph)
+    def get_wins(item):
+        return item[1]
+        
+    top5 = sorted(wins.items(), key=get_wins, reverse=True)[:5]
+    players = [x[0] for x in top5]
+    win_counts = [x[1] for x in top5]
+
+    plt.figure()
+    plt.bar(players, win_counts, color='lightblue')
+    plt.title("Top 5 Players sorted by Wins", fontdict=font1)
+    plt.xlabel("Players", fontdict=font2)
+    plt.ylabel("Wins", fontdict=font2)
+    plt.grid(axis='y')
+    plt.tight_layout()
+    plt.show()
+
+    # 2. Frequency of games played ( Pie Chart)
+    plt.figure()
+    plt.pie(games.values(), labels=games.keys(), autopct='%1.2f%%')
+    plt.title("Frequency of Games played", fontdict=font1)
+    plt.tight_layout()
+    plt.show()
+
+    # 3. Top 7 players wins vs losses (Bar Graph)
+    top7 = sorted(wins.items(), key=get_wins, reverse=True)[:7]
+    players = [x[0] for x in top7]
+    win_counts = [x[1] for x in top7]
+    loss_counts = [losses.get(player, 0) for player in players]
+    x = np.arange(len(players))
+
+    plt.figure()
+    plt.bar(x-0.2, win_counts, 0.4, label="Wins")
+    plt.bar(x+0.2, loss_counts, 0.4, label="Losses")
+    plt.xticks(x, players)
+    plt.title("Wins vs Losses (Top 7 Players)", fontdict=font1)
+    plt.xlabel("Players", fontdict=font2)
+    plt.ylabel("Count", fontdict=font2)
+    plt.grid(axis='y')
+    plt.legend()
+    plt.show()

@@ -1,6 +1,7 @@
 from base_game import mouse_pos,Game,create_button
 import pygame
 import numpy as np
+import os
 from datetime import datetime
 
 class othello(Game):
@@ -11,8 +12,8 @@ class othello(Game):
         self.board[3:5,3:5] = np.array([[2,1],[1,2]])                               # Initialising board with 2 whites and 2 blacks in center
         self.directions = [(0,1),(1,0),(1,1),(-1,0),(0,-1),(-1,-1),(1,-1),(-1,1)]           # Defining direction's of checking valid moves
         self.valid_moves(1)
-        self.font = pygame.font.Font(None,52)
-        self.ok_button = create_button("Ok",(255,255,255),self.font,self.surface.get_rect().centerx,600,80,300)
+        self.celinda_font = pygame.font.Font(os.path.join("fonts","Celinda.ttf"),45)
+        self.ok_button = create_button("Ok",(255,255,255),self.celinda_font,self.surface.get_rect().centerx,600,80,300)
         self.results = {}                                                                       # Creating results dictionary
         
     def player_count(self,player):                                                  # Calculating player scores
@@ -136,12 +137,12 @@ class othello(Game):
     def play(self):
 
         # Player Scores Displaying
-        Black_score = self.font.render(f"Black : {self.player_count(1)}",1,(255,255,255))
-        White_score = self.font.render(f"White : {self.player_count(2)}",1,(255,255,255))
+        Black_score = self.celinda_font.render(f"Black : {self.player_count(1)}",1,(255,255,255))
+        White_score = self.celinda_font.render(f"White : {self.player_count(2)}",1,(255,255,255))
         pygame.draw.circle(self.surface,(0,0,0),(75,450),30)
-        self.surface.blit(Black_score,(120,437))
+        self.surface.blit(Black_score,(120,425))
         pygame.draw.circle(self.surface,(255,255,255),(75,550),30)
-        self.surface.blit(White_score,(120,537))
+        self.surface.blit(White_score,(120,525))
 
         # While playing 
         if self.still_playing:
@@ -149,7 +150,7 @@ class othello(Game):
                 self.display_board()
             else:
                 self.display_board()
-                Text = self.font.render(f"There are no Valid moves for Player{self.current_player + 1}",1,(255,255,255))
+                Text = self.celinda_font.render(f"There are no Valid moves for Player{self.current_player + 1}",1,(255,255,255))
                 Text_rect = Text.get_rect()
                 Text_rect.center = (self.surface.get_rect().centerx,500)
                 pygame.draw.rect(self.surface,(0,0,0),(300,400,900,300),0,15)
@@ -160,7 +161,7 @@ class othello(Game):
         else:
             self.display_board()
             pygame.draw.rect(self.surface,(0,0,0),(300,400,900,300),0,15)
-            Text_1 = self.font.render(f"No more valid moves",1,(255,255,255))
+            Text_1 = self.celinda_font.render(f"No more valid moves",1,(255,255,255))
             Text_1_rect = Text_1.get_rect()
             Text_1_rect.center = (750,500)
             winner = self.check_win()
@@ -169,14 +170,14 @@ class othello(Game):
                     player = "Black"
                 else:
                     player = "White"
-                Text_2 = self.font.render(f"{player} won with a majority of {self.player_count(winner)-self.player_count(3-winner)}",1,(255,255,255))
+                Text_2 = self.celinda_font.render(f"{player} won with a majority of {self.player_count(winner)-self.player_count(3-winner)}",1,(255,255,255))
             else:
-                Text_2 = self.font.render(f"Game is Draw",1,(255,255,255))
+                Text_2 = self.celinda_font.render(f"Game is Draw",1,(255,255,255))
             Text_2_rect =Text_2.get_rect()
             Text_2_rect.center = (self.surface.get_rect().centerx,550)
 
             # Redirecting Text
-            redirecting_text = self.font.render(f"Redirecting in... {int(4 - int(pygame.time.get_ticks()-self.game_over_time)/1000)}'s",1,(255,255,255))
+            redirecting_text = self.celinda_font.render(f"Redirecting in... {int(4 - int(pygame.time.get_ticks()-self.game_over_time)/1000)}'s",1,(255,255,255))
             redirecting_text_rect = redirecting_text.get_rect()
             redirecting_text_rect.center = (self.surface.get_rect().centerx,650)
 

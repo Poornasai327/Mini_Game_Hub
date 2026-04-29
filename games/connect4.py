@@ -2,6 +2,7 @@ from base_game import Game,mouse_pos,load_img
 from datetime import datetime
 import pygame
 import numpy as np
+import os
 from numpy.lib.stride_tricks import sliding_window_view
 
 # Creating connect4 class using inheritance
@@ -9,7 +10,7 @@ class connect4(Game):
 
     def __init__(self,players,current_player,surface,size):             # Using same init as in Game class
         self.still_playing = True
-        self.font = pygame.font.Font(None,52)
+        self.celinda_font = pygame.font.Font(os.path.join("fonts","Celinda.ttf"),52)
         super().__init__(players,current_player,surface,size)
         self.results = {}
 
@@ -84,16 +85,16 @@ class connect4(Game):
 
             # Displaying players turns
             if self.current_player == 0:
-                Text = self.font.render("Green's Turn",1,(255,255,255))
+                Text = self.celinda_font.render("Green's Turn",1,(255,255,255))
             else:
-                Text = self.font.render("Red's Turn",1,(255,255,255))
+                Text = self.celinda_font.render("Red's Turn",1,(255,255,255))
             Text_rect = Text.get_rect()
             Text_rect.center = (750,50)
             self.surface.blit(Text,Text_rect)
 
         else:
             # Showing redirection text
-            redirecting = self.font.render(f"Redirecting in... {int(4-int(pygame.time.get_ticks()-self.game_over_time)/1000)}'s",1,(255,255,255))
+            redirecting = self.celinda_font.render(f"Redirecting in... {int(4-int(pygame.time.get_ticks()-self.game_over_time)/1000)}'s",1,(255,255,255))
             redirecting_rect = redirecting.get_rect()
             redirecting_rect.center = (self.surface.get_rect().centerx,950)
             self.surface.blit(redirecting,redirecting_rect)
@@ -101,14 +102,14 @@ class connect4(Game):
             # Displaying who is winner
             if self.check_win():
                 if self.current_player == 0:
-                    winner_text = self.font.render("Green Won",1,(255,255,255))
+                    winner_text = self.celinda_font.render("Green Won",1,(255,255,255))
                 else:
-                    winner_text = self.font.render("Red Won",1,(255,255,255))
+                    winner_text = self.celinda_font.render("Red Won",1,(255,255,255))
                 winner_text_rect = winner_text.get_rect()
                 winner_text_rect.center = (self.surface.get_rect().centerx,50)
                 self.surface.blit(winner_text,winner_text_rect)
             elif self.check_draw():
-                draw_text = self.font.render("Game is Draw",1,(255,255,255))
+                draw_text = self.celinda_font.render("Game is Draw",1,(255,255,255))
                 draw_text_rect = draw_text.get_rect()
                 draw_text_rect.center = (self.surface.get_rect().centerx,50)
                 self.surface.blit(draw_text,draw_text_rect)
