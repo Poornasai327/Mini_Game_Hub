@@ -28,14 +28,14 @@ def main():
     Game_Surface_centery = Game_Surface.get_rect().centery
 
     # Loading Background Images
-    Menu_bg1 = load_img(os.path.join(os.path.join('background_images','menu_bg1.png')),screen_size)
-    Menu_bg2 = load_img(os.path.join('background_images','menu_bg2.png'),screen_size)
-    connect4_bg = load_img(os.path.join("background_images","connect4_bg.png"),screen_size)
-    tictactoe_bg = load_img(os.path.join("background_images","tictactoe_bg.png"),screen_size)
-    othello_bg = load_img(os.path.join("background_images","othello_bg.png"),screen_size)
+    Menu_bg1 = load_img(os.path.join(os.path.join('assets','background_images','menu_bg1.png')),screen_size)
+    Menu_bg2 = load_img(os.path.join('assets','background_images','menu_bg2.png'),screen_size)
+    connect4_bg = load_img(os.path.join('assets',"background_images","connect4_bg.png"),screen_size)
+    tictactoe_bg = load_img(os.path.join('assets',"background_images","tictactoe_bg.png"),screen_size)
+    othello_bg = load_img(os.path.join('assets',"background_images","othello_bg.png"),screen_size)
 
     # Defining font styles
-    retro_font = pygame.font.Font(os.path.join("fonts","Retro.ttf"),40)
+    retro_font = pygame.font.Font(os.path.join('assets',"fonts","Retro.ttf"),40)
 
     # Creating buttons
     Select_button = create_button("Select Game",(255,255,255),retro_font,Game_Surface_centerx,380,80,300)

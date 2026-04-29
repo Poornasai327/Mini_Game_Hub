@@ -12,7 +12,7 @@ class othello(Game):
         self.board[3:5,3:5] = np.array([[2,1],[1,2]])                               # Initialising board with 2 whites and 2 blacks in center
         self.directions = [(0,1),(1,0),(1,1),(-1,0),(0,-1),(-1,-1),(1,-1),(-1,1)]           # Defining direction's of checking valid moves
         self.valid_moves(1)
-        self.celinda_font = pygame.font.Font(os.path.join("fonts","Celinda.ttf"),45)
+        self.celinda_font = pygame.font.Font(os.path.join("assets","fonts","Celinda.ttf"),45)
         self.ok_button = create_button("Ok",(255,255,255),self.celinda_font,self.surface.get_rect().centerx,600,80,300)
         self.results = {}                                                                       # Creating results dictionary
         

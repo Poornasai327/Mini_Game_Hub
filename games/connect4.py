@@ -10,7 +10,7 @@ class connect4(Game):
 
     def __init__(self,players,current_player,surface,size):             # Using same init as in Game class
         self.still_playing = True
-        self.celinda_font = pygame.font.Font(os.path.join("fonts","Celinda.ttf"),52)
+        self.celinda_font = pygame.font.Font(os.path.join("assets","fonts","Celinda.ttf"),52)
         super().__init__(players,current_player,surface,size)
         self.results = {}
 
