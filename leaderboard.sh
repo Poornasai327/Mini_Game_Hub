@@ -26,6 +26,7 @@ generate_statistics(){
                         losses=0
                         ratio=9999                            # default ratio for '0' losses
                         while IFS=',' read -r winner loser date g isdraw; do
+                                isdraw=$(echo "$isdraw" | tr -d '\r')
                                 if [[ "$g" != "$game" ]]; then                 # skip if not current game
                                         continue
                                 fi
